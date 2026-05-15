@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>史伟馨 - 专业简历</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#000000',
+                        secondary: '#1a1a1a',
+                        accent: '#333333',
+                        light: '#f5f5f5',
+                        gray: '#6b7280'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .resume-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            position: relative;
+            padding-bottom: 8px;
+        }
+        .section-title:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 3px;
+            background: #000;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 20px;
+            border-left: 2px solid #e5e5e5;
+        }
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 6px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #000;
+        }
+        .skill-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            margin: 4px;
+            background: #f5f5f5;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .resume-container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            body {
+                background: white;
+            }
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 4px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 py-8 px-4">
+    <!-- Action Buttons -->
+    <div class="no-print fixed top-4 right-4 z-10 flex space-x-2">
+        <button id="exportPDF" class="bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition-colors flex items-center">
+            <i class="fas fa-file-pdf mr-2"></i>导出PDF
+        </button>
+        <button id="shareButton" class="bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition-colors flex items-center">
+            <i class="fas fa-share-alt mr-2"></i>分享
+        </button>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="shareModal" class="no-print fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden">
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-lg font-semibold text-gray-900">分享简历</h3>
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <div class="mb-6">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">部署您的简历</h4>
+                    <p class="text-sm text-gray-600 mb-4">要将简历分享给他人，您需要先将此HTML文件部署到网络上。以下是几种免费的方法：</p>
+                    
+                    <div class="space-y-4">
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h5 class="font-medium text-black mb-2">方法1: 使用GitHub Pages</h5>
+                            <ol class="text-sm text-gray-600 space-y-2">
+                                <li>1. 创建GitHub账号并登录</li>
+                                <li>2. 创建新仓库，命名为"resume"</li>
+                                <li>3. 上传此HTML文件，命名为"index.html"</li>
+                                <li>4. 在仓库设置中启用GitHub Pages</li>
+                                <li>5. 您的简历将可通过 <code class="bg-gray-100 px-1 rounded">https://您的用户名.github.io/resume/</code> 访问</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h5 class="font-medium text-black mb-2">方法2: 使用Vercel</h5>
+                            <ol class="text-sm text-gray-600 space-y-2">
+                                <li>1. 创建Vercel账号并登录</li>
+                                <li>2. 点击"New Project"</li>
+                                <li>3. 选择"Import Git Repository"或直接上传文件</li>
+                                <li>4. Vercel会自动部署您的网页</li>
+                                <li>5. 您将获得一个自定义域名</li>
+                            </ol>
+                        </div>
+                        
+                        <div class="border border-gray-200 rounded-lg p-4">
+                            <h5 class="font-medium text-black mb-2">方法3: 使用Netlify</h5>
+                            <ol class="text-sm text-gray-600 space-y-2">
+                                <li>1. 创建Netlify账号并登录</li>
+                                <li>2. 点击"Add new site" > "Deploy manually"</li>
+                                <li>3. 拖放此HTML文件到上传区域</li>
+                                <li>4. Netlify会立即部署您的网页</li>
+                                <li>5. 您将获得一个可分享的链接</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">下载简历文件</h4>
+                    <button id="downloadHTML" class="w-full bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center">
+                        <i class="fas fa-download mr-2"></i>下载HTML文件
+                    </button>
+                    <p class="text-xs text-gray-500 mt-2">下载后，您可以按照上述方法部署您的简历</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">操作成功</div>
+
+    <!-- Resume Content -->
+    <div id="resume" class="resume-container p-8">
+        <!-- Header Section -->
+        <header class="flex items-start mb-8">
+            <div class="mr-6">
+                <img src="https://t1.chatglm.cn/file/6a0694d7867b10d77f93b279.jpg?expired_at=1779248228&sign=2e2f1586c7cf91d76f8dd2556a0d87d2&ext=jpg" alt="史伟馨" class="w-32 h-40 object-cover rounded">
+            </div>
+            <div class="flex-1">
+                <h1 class="text-3xl font-bold text-black mb-1">史伟馨</h1>
+                <p class="text-lg text-gray-600 mb-3">新闻学专业 | 求职意向：新闻内容生产相关岗位</p>
+                
+                <div class="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+                    <div class="flex items-center">
+                        <i class="fas fa-phone-alt mr-2 text-black"></i>
+                        <span>15061731691</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-envelope mr-2 text-black"></i>
+                        <span>x102105@qq.com</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-map-marker-alt mr-2 text-black"></i>
+                        <span>江苏-无锡</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fas fa-birthday-cake mr-2 text-black"></i>
+                        <span>20岁</span>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap gap-2">
+                    <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">本科</span>
+                    <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">群众</span>
+                    <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">英语四级</span>
+                    <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">普通话二级甲等</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Education Section -->
+        <section class="mb-6">
+            <h2 class="section-title text-lg font-bold text-black mb-4">教育背景</h2>
+            <div class="timeline-item mb-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-semibold text-black">西北民族大学</h3>
+                        <p class="text-gray-600">新闻学专业 (本科)</p>
+                    </div>
+                    <span class="text-sm text-gray-500">2023.09 - 至今</span>
+                </div>
+                <ul class="mt-2 text-sm text-gray-600 space-y-1">
+                    <li>• 主修新闻学相关课程，通过大学英语四级、普通话二级甲等考试</li>
+                    <li>• 专业技能：采写编评摄均熟练，熟练使用各大厂家的AI工具</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section class="mb-6">
+            <h2 class="section-title text-lg font-bold text-black mb-4">实践与实习经历</h2>
+            
+            <div class="timeline-item mb-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-semibold text-black">云南日报报业传媒集团有限公司</h3>
+                        <p class="text-gray-600">全媒体运行中心实习生</p>
+                    </div>
+                </div>
+                <p class="mt-2 text-sm text-gray-600">实习作品收获部门主管和其它同事的一致好评</p>
+            </div>
+            
+            <div class="timeline-item mb-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-semibold text-black">校外支教活动</h3>
+                        <p class="text-gray-600">2024 (大二期间)</p>
+                    </div>
+                </div>
+                <ul class="mt-2 text-sm text-gray-600 space-y-1">
+                    <li>• 负责校外支教，深入学校周边的乡村，对当地的小学生、初中生进行支教活动</li>
+                    <li>• 提升了实践教学和组织能力</li>
+                </ul>
+            </div>
+            
+            <div class="timeline-item mb-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="font-semibold text-black">西北民族大学青年志愿者协会</h3>
+                        <p class="text-gray-600">大二期间担任项目部副部长</p>
+                    </div>
+                </div>
+                <ul class="mt-2 text-sm text-gray-600 space-y-1">
+                    <li>• 负责社团日常活动策划与安排工作</li>
+                    <li>• 提升了组织管理和执行能力</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section class="mb-6">
+            <h2 class="section-title text-lg font-bold text-black mb-4">专业技能</h2>
+            
+            <div class="grid grid-cols-2 gap-4 mb-4">
+                <div>
+                    <h3 class="font-medium text-black mb-2">语言能力</h3>
+                    <div class="space-y-2">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm text-gray-600">普通话水平</span>
+                                <span class="text-sm text-black font-medium">二级甲等</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-black h-1.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm text-gray-600">英语水平</span>
+                                <span class="text-sm text-black font-medium">四级 (免修资格)</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-black h-1.5 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-medium text-black mb-2">专业技能</h3>
+                    <div class="space-y-2">
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm text-gray-600">AI工具使用</span>
+                                <span class="text-sm text-black font-medium">熟练</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-black h-1.5 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-1">
+                                <span class="text-sm text-gray-600">新闻剪辑与拍摄</span>
+                                <span class="text-sm text-black font-medium">熟练</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-black h-1.5 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <h3 class="font-medium text-black mb-2">软件技能</h3>
+                <div class="flex flex-wrap">
+                    <span class="skill-tag">ChatGPT</span>
+                    <span class="skill-tag">Google Gemini</span>
+                    <span class="skill-tag">Grok</span>
+                    <span class="skill-tag">Photoshop</span>
+                    <span class="skill-tag">剪映</span>
+                    <span class="skill-tag">松下S5M2</span>
+                    <span class="skill-tag">TRAE</span>
+                    <span class="skill-tag">ECharts</span>
+                    <span class="skill-tag">可画</span>
+                    <span class="skill-tag">易企秀</span>
+                    <span class="skill-tag">秀米</span>
+                    <span class="skill-tag">镝数图表</span>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="font-medium text-black mb-2">其他能力</h3>
+                <p class="text-sm text-gray-600">• 具有一定的心理学知识</p>
+            </div>
+        </section>
+
+        <!-- Awards Section -->
+        <section class="mb-6">
+            <h2 class="section-title text-lg font-bold text-black mb-4">获奖情况</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="bg-gray-50 p-3 rounded">
+                    <h3 class="font-medium text-black">西北民族大学三等奖学金</h3>
+                    <p class="text-sm text-gray-500">校级</p>
+                </div>
+                <div class="bg-gray-50 p-3 rounded">
+                    <h3 class="font-medium text-black">"先进个人"</h3>
+                    <p class="text-sm text-gray-500">2024年爱心支教活动</p>
+                </div>
+                <div class="bg-gray-50 p-3 rounded">
+                    <h3 class="font-medium text-black">"先进个人"</h3>
+                    <p class="text-sm text-gray-500">2024年度"大手牵小手，一起学雷锋"活动</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Self Evaluation Section -->
+        <section class="mb-6">
+            <h2 class="section-title text-lg font-bold text-black mb-4">自我评价</h2>
+            <div class="text-sm text-gray-600 space-y-2">
+                <p>• 热爱新闻行业，对新闻工作具有快速学习的能力，以及具有一定的组织管理、策划执行能力及协调能力，具备较好的理解能力、较为出色的实践经验；</p>
+                <p>• 具有强烈的事业心和责任感，敢于接受挑战工作，具备创新能力及业务水平，综合素质较高，善于总结、发现工作技巧，提高工作效率，能够适应各种复杂环境；</p>
+                <p>• 熟练掌握多种AI工具和设计软件，具备新闻剪辑、拍摄和数据可视化能力，结合心理学知识，能更好地理解和处理内容生产相关任务。</p>
+            </div>
+        </section>
+
+        <!-- Interests Section -->
+        <section class="no-print">
+            <h2 class="section-title text-lg font-bold text-black mb-4">兴趣爱好</h2>
+            <div class="flex flex-wrap gap-2">
+                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">阅读</span>
+                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">登山</span>
+                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">徒步旅行</span>
+                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">户外野营</span>
+                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">自行车</span>
+            </div>
+        </section>
+
+        <!-- Internship Works Section (Only visible in web version) -->
+        <section class="no-print mt-8">
+            <h2 class="section-title text-lg font-bold text-black mb-4">实习作品</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-file-word text-blue-600 mr-2"></i>
+                        <h3 class="font-medium text-black">洱源的冬天</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">新闻稿件</p>
+                    <a href="https://t1.chatglm.cn/file/6a06968d534dae20080118a3.docx?expired_at=1779248780&sign=e34c9bdf1e082bae703d43f9181230cf&ext=docx" class="text-sm text-black hover:underline" target="_blank">查看文档</a>
+                </div>
+                
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-file-pdf text-red-600 mr-2"></i>
+                        <h3 class="font-medium text-black">来怒江 欢欢喜喜过大年</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">新闻稿件</p>
+                    <a href="https://t1.chatglm.cn/file/6a0696a6534dae20080118c2.pdf?expired_at=1779248780&sign=c5fe61cc1974e04c1a5c211e69628d79&ext=pdf" class="text-sm text-black hover:underline" target="_blank">查看文档</a>
+                </div>
+                
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-file-word text-blue-600 mr-2"></i>
+                        <h3 class="font-medium text-black">梅海无雪自成春——洱源松鹤"中国古梅之乡"花期邀约</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">新闻稿件</p>
+                    <a href="https://t1.chatglm.cn/file/6a06968d867b10d77f93b445.docx?expired_at=1779248780&sign=02c77563071997ea30a480401ae25a4d&ext=docx" class="text-sm text-black hover:underline" target="_blank">查看文档</a>
+                </div>
+                
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-file-word text-blue-600 mr-2"></i>
+                        <h3 class="font-medium text-black">英国首相寻味云南</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">新闻稿件</p>
+                    <a href="https://t1.chatglm.cn/file/6a069691534dae20080118a9.docx?expired_at=1779248780&sign=b7e6ec60efadfafa677034152a31460e&ext=docx" class="text-sm text-black hover:underline" target="_blank">查看文档</a>
+                </div>
+                
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div class="flex items-center mb-2">
+                        <i class="fas fa-file-archive text-yellow-600 mr-2"></i>
+                        <h3 class="font-medium text-black">迎滇超!游怒江!怒江文旅有礼了！</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">新闻稿件</p>
+                    <a href="https://t1.chatglm.cn/file/6a06968f867b10d77f93b446.zip?expired_at=1779248780&sign=d2ee1d6deadc8fb021bdcca446d9ab8b&ext=zip" class="text-sm text-black hover:underline" target="_blank">查看文档</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // PDF Export functionality
+        document.getElementById('exportPDF').addEventListener('click', function() {
+            // Get the resume element
+            const element = document.getElementById('resume');
+            
+            // Create a clone of the resume for PDF generation
+            const pdfContent = element.cloneNode(true);
+            
+            // Remove elements that shouldn't be in the PDF
+            const noPrintElements = pdfContent.querySelectorAll('.no-print');
+            noPrintElements.forEach(el => el.remove());
+            
+            // PDF options
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: '史伟馨_简历.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Generate PDF
+            html2pdf().set(opt).from(pdfContent).save();
+        });
+        
+        // Share functionality
+        document.getElementById('shareButton').addEventListener('click', function() {
+            // Show share modal
+            document.getElementById('shareModal').classList.remove('hidden');
+        });
+        
+        // Close modal
+        document.getElementById('closeModal').addEventListener('click', function() {
+            document.getElementById('shareModal').classList.add('hidden');
+        });
+        
+        // Download HTML functionality
+        document.getElementById('downloadHTML').addEventListener('click', function() {
+            // Get the entire HTML document
+            const htmlContent = document.documentElement.outerHTML;
+            
+            // Create a Blob with the HTML content
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            
+            // Create a download link
+            const downloadLink = document.createElement('a');
+            downloadLink.href = URL.createObjectURL(blob);
+            downloadLink.download = '史伟馨_简历.html';
+            
+            // Trigger the download
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            
+            // Show toast notification
+            const toast = document.getElementById('toast');
+            toast.textContent = 'HTML文件已下载';
+            toast.classList.add('show');
+            
+            // Hide toast after 3 seconds
+            setTimeout(function() {
+                toast.classList.remove('show');
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
