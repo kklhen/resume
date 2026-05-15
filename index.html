@@ -104,78 +104,14 @@
 </head>
 <body class="bg-gray-100 py-8 px-4">
     <!-- Action Buttons -->
-    <div class="no-print fixed top-4 right-4 z-10 flex space-x-2">
+    <div class="no-print fixed top-4 right-4 z-10">
         <button id="exportPDF" class="bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition-colors flex items-center">
             <i class="fas fa-file-pdf mr-2"></i>导出PDF
         </button>
-        <button id="shareButton" class="bg-black text-white px-4 py-2 rounded-lg shadow-lg hover:bg-gray-800 transition-colors flex items-center">
-            <i class="fas fa-share-alt mr-2"></i>分享
-        </button>
-    </div>
-
-    <!-- Share Modal -->
-    <div id="shareModal" class="no-print fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center">
-        <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden">
-            <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-                <h3 class="text-lg font-semibold text-gray-900">分享简历</h3>
-                <button id="closeModal" class="text-gray-500 hover:text-gray-700">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="p-6">
-                <div class="mb-6">
-                    <h4 class="text-sm font-medium text-gray-700 mb-2">部署您的简历</h4>
-                    <p class="text-sm text-gray-600 mb-4">要将简历分享给他人，您需要先将此HTML文件部署到网络上。以下是几种免费的方法：</p>
-                    
-                    <div class="space-y-4">
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <h5 class="font-medium text-black mb-2">方法1: 使用GitHub Pages</h5>
-                            <ol class="text-sm text-gray-600 space-y-2">
-                                <li>1. 创建GitHub账号并登录</li>
-                                <li>2. 创建新仓库，命名为"resume"</li>
-                                <li>3. 上传此HTML文件，命名为"index.html"</li>
-                                <li>4. 在仓库设置中启用GitHub Pages</li>
-                                <li>5. 您的简历将可通过 <code class="bg-gray-100 px-1 rounded">https://您的用户名.github.io/resume/</code> 访问</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <h5 class="font-medium text-black mb-2">方法2: 使用Vercel</h5>
-                            <ol class="text-sm text-gray-600 space-y-2">
-                                <li>1. 创建Vercel账号并登录</li>
-                                <li>2. 点击"New Project"</li>
-                                <li>3. 选择"Import Git Repository"或直接上传文件</li>
-                                <li>4. Vercel会自动部署您的网页</li>
-                                <li>5. 您将获得一个自定义域名</li>
-                            </ol>
-                        </div>
-                        
-                        <div class="border border-gray-200 rounded-lg p-4">
-                            <h5 class="font-medium text-black mb-2">方法3: 使用Netlify</h5>
-                            <ol class="text-sm text-gray-600 space-y-2">
-                                <li>1. 创建Netlify账号并登录</li>
-                                <li>2. 点击"Add new site" > "Deploy manually"</li>
-                                <li>3. 拖放此HTML文件到上传区域</li>
-                                <li>4. Netlify会立即部署您的网页</li>
-                                <li>5. 您将获得一个可分享的链接</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <h4 class="text-sm font-medium text-gray-700 mb-2">下载简历文件</h4>
-                    <button id="downloadHTML" class="w-full bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors flex items-center justify-center">
-                        <i class="fas fa-download mr-2"></i>下载HTML文件
-                    </button>
-                    <p class="text-xs text-gray-500 mt-2">下载后，您可以按照上述方法部署您的简历</p>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="toast">操作成功</div>
+    <div id="toast" class="toast">PDF导出成功</div>
 
     <!-- Resume Content -->
     <div id="resume" class="resume-container p-8">
@@ -469,47 +405,16 @@
             };
             
             // Generate PDF
-            html2pdf().set(opt).from(pdfContent).save();
-        });
-        
-        // Share functionality
-        document.getElementById('shareButton').addEventListener('click', function() {
-            // Show share modal
-            document.getElementById('shareModal').classList.remove('hidden');
-        });
-        
-        // Close modal
-        document.getElementById('closeModal').addEventListener('click', function() {
-            document.getElementById('shareModal').classList.add('hidden');
-        });
-        
-        // Download HTML functionality
-        document.getElementById('downloadHTML').addEventListener('click', function() {
-            // Get the entire HTML document
-            const htmlContent = document.documentElement.outerHTML;
-            
-            // Create a Blob with the HTML content
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            
-            // Create a download link
-            const downloadLink = document.createElement('a');
-            downloadLink.href = URL.createObjectURL(blob);
-            downloadLink.download = '史伟馨_简历.html';
-            
-            // Trigger the download
-            document.body.appendChild(downloadLink);
-            downloadLink.click();
-            document.body.removeChild(downloadLink);
-            
-            // Show toast notification
-            const toast = document.getElementById('toast');
-            toast.textContent = 'HTML文件已下载';
-            toast.classList.add('show');
-            
-            // Hide toast after 3 seconds
-            setTimeout(function() {
-                toast.classList.remove('show');
-            }, 3000);
+            html2pdf().set(opt).from(pdfContent).save().then(function() {
+                // Show toast notification
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                
+                // Hide toast after 3 seconds
+                setTimeout(function() {
+                    toast.classList.remove('show');
+                }, 3000);
+            });
         });
     </script>
 </body>
